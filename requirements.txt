@@ -1,0 +1,17 @@
+streamlit
+langchain>=1.0.0
+langchain-community>=0.4.0
+langchain-openai>=1.0.0
+langchain-groq>=0.1.0
+langchain-text-splitters>=0.1.0
+langchain-classic>=1.0.0
+faiss-cpu
+python-dotenv
+pypdf2
+tiktoken
+pypdf
+sentence-transformers
+psycopg2-binary
+fastapi
+uvicorn
+python-multipart
