@@ -25,7 +25,7 @@ for logger_name in ["httpx", "huggingface_hub", "sentence_transformers", "urllib
 logging.basicConfig(level=logging.ERROR)
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Response, Form, BackgroundTasks
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import modules from our project
@@ -35,11 +35,13 @@ from database import (
     init_db, save_qa, get_history, delete_history,
     get_or_create_session, list_sessions, save_document,
     update_document_status, get_document, get_session_documents,
-    check_duplicate_document, delete_document_record
+    check_duplicate_document, delete_document_record, update_session_title,
+    pin_session, archive_session
 )
 
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain_groq import ChatGroq
 
 # Our app logger
 logger = logging.getLogger("rag-api")
@@ -60,6 +62,32 @@ embeddings = HuggingFaceEndpointEmbeddings(
     model="sentence-transformers/all-MiniLM-L6-v2",
     huggingfacehub_api_token=hf_token
 )
+
+
+def generate_chat_title(question: str) -> str:
+    """Generate a short 3-5 word title from the user's first question using Groq."""
+    try:
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            return question[:30] + "..." if len(question) > 30 else question
+            
+        llm = ChatGroq(
+            api_key=api_key,
+            model="llama-3.1-8b-instant",
+            temperature=0.7,
+            max_tokens=20
+        )
+        prompt = f"Generate a short, concise, 3-5 word title for a chat conversation that starts with this question: '{question}'. Return ONLY the title itself, with no quotation marks, no punctuation, and no extra text."
+        response = llm.invoke(prompt)
+        title = response.content.strip().strip('"').strip("'")
+        # Keep title within a reasonable length
+        if len(title) > 40:
+            title = title[:37] + "..."
+        return title
+    except Exception as e:
+        logger.error(f"Error generating chat title: {e}")
+        # Fallback to a truncated version of the question
+        return question[:30] + "..." if len(question) > 30 else question
 
 # Cache for active session searchers in memory: session_id -> { "searcher": DocumentSearcher, "document_ids": List[str] }
 active_searchers = {}
@@ -190,9 +218,14 @@ def get_index():
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
-    """Serves the SVG favicon to prevent console 404 logs."""
-    svg_content = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔍</text></svg>"""
-    return Response(content=svg_content, media_type="image/svg+xml")
+    """Serves the favicon image."""
+    return FileResponse("favicon.png")
+
+
+@app.get("/pin.png", include_in_schema=False)
+def pin_icon():
+    """Serves the pin icon."""
+    return FileResponse("pin.png")
 
 
 # --- API Endpoints ---
@@ -211,21 +244,59 @@ def create_session(request: SessionCreateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class TogglePinRequest(BaseModel):
+    is_pinned: bool
+
+
+class ToggleArchiveRequest(BaseModel):
+    is_archived: bool
+
+
 @app.get("/api/sessions")
-def get_sessions_endpoint(limit: int = 50):
+def get_sessions_endpoint(include_archived: bool = False, limit: int = 50):
     """Retrieve list of all chat sessions."""
     try:
-        sessions = list_sessions(limit=limit)
+        sessions = list_sessions(include_archived=include_archived, limit=limit)
         return {
             "sessions": [
                 {
                     "id": s.id,
                     "title": s.title,
+                    "is_pinned": s.is_pinned,
+                    "is_archived": s.is_archived,
                     "created_at": s.created_at.isoformat()
                 }
                 for s in sessions
             ]
         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/api/sessions/{session_id}/pin")
+def toggle_pin_session(session_id: str, request: TogglePinRequest):
+    """Pin or unpin a chat session."""
+    try:
+        session = pin_session(session_id, request.is_pinned)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return {"status": "success", "session_id": session_id, "is_pinned": session.is_pinned}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/api/sessions/{session_id}/archive")
+def toggle_archive_session(session_id: str, request: ToggleArchiveRequest):
+    """Archive or unarchive a chat session."""
+    try:
+        session = archive_session(session_id, request.is_archived)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return {"status": "success", "session_id": session_id, "is_archived": session.is_archived}
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -481,7 +552,20 @@ def query_document(request: QueryRequest):
 
     try:
         # 2. Search using combined vector store
-        answer = searcher.search(request.question)
+        search_result = searcher.search(request.question)
+        answer = search_result["result"]
+        sources = search_result["sources"]
+
+        # Check if this is the first interaction in the session
+        existing_history = get_history(session_id=request.session_id)
+        title_updated = False
+        new_title = None
+        if not existing_history:
+            # Generate a dynamic title based on the user's question
+            new_title = generate_chat_title(request.question)
+            update_session_title(request.session_id, new_title)
+            title_updated = True
+            logger.info(f"Updated session {request.session_id} title to: {new_title}")
 
         # 3. Save Q&A to database history
         save_qa(
@@ -494,7 +578,10 @@ def query_document(request: QueryRequest):
         return {
             "session_id": request.session_id,
             "question": request.question,
-            "answer": answer
+            "answer": answer,
+            "sources": sources,
+            "title_updated": title_updated,
+            "new_title": new_title
         }
     except Exception as e:
         logger.error(f"Error querying document context for session {request.session_id}: {e}")

@@ -10,6 +10,7 @@ python-dotenv
 pypdf2
 tiktoken
 pypdf
+cryptography
 langchain-huggingface
 psycopg2-binary
 fastapi

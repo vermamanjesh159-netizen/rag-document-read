@@ -43,6 +43,7 @@ class DocumentSearcher:
             chain_type="stuff",
             retriever=self.vectorstore.as_retriever(search_kwargs={"k": 3}),
             chain_type_kwargs={"prompt": prompt},
+            return_source_documents=True
         )
 
     def search(self, query):
@@ -56,12 +57,33 @@ class DocumentSearcher:
             # Handle different response formats
             if isinstance(response, dict):
                 result = response.get("result", str(response))
+                source_documents = response.get("source_documents", [])
             else:
                 result = str(response)
+                source_documents = []
 
             print(f"✅ Got response: {result[:100]}...")
-            return result
+            
+            # Format source documents
+            sources = []
+            for doc in source_documents:
+                source_path = doc.metadata.get("source", "Unknown")
+                filename = os.path.basename(source_path)
+                page = doc.metadata.get("page", 0) + 1  # 0-indexed to 1-indexed
+                sources.append({
+                    "filename": filename,
+                    "page": page,
+                    "content": doc.page_content
+                })
+
+            return {
+                "result": result,
+                "sources": sources
+            }
 
         except Exception as e:
             print(f"❌ Search error: {str(e)}")
-            return f"Error during search: {str(e)}"
+            return {
+                "result": f"Error during search: {str(e)}",
+                "sources": []
+            }

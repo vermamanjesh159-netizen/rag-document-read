@@ -2,7 +2,7 @@ import os
 import uuid
 from datetime import datetime
 from typing import Optional, List
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, text
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, text, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
 
@@ -22,6 +22,8 @@ class ChatSession(Base):
 
     id = Column(String(50), primary_key=True)
     title = Column(String(255), nullable=True)
+    is_pinned = Column(Boolean, default=False, server_default="false")
+    is_archived = Column(Boolean, default=False, server_default="false")
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
@@ -54,11 +56,14 @@ def init_db():
     """Create all tables if they don't exist and run light migrations."""
     Base.metadata.create_all(bind=engine)
     
-    # Handle schema migration for existing databases: Add session_id to qa_history
+    # Handle schema migration for existing databases: Add columns
     db = SessionLocal()
     try:
+        # qa_history migration
         if "postgresql" in str(engine.url):
             db.execute(text("ALTER TABLE qa_history ADD COLUMN IF NOT EXISTS session_id VARCHAR(50)"))
+            db.execute(text("ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT FALSE"))
+            db.execute(text("ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT FALSE"))
             db.commit()
         else:
             # SQLite migrations
@@ -66,7 +71,19 @@ def init_db():
                 db.execute(text("ALTER TABLE qa_history ADD COLUMN session_id VARCHAR(50)"))
                 db.commit()
             except Exception:
-                db.rollback() # column likely already exists
+                db.rollback()
+                
+            try:
+                db.execute(text("ALTER TABLE chat_sessions ADD COLUMN is_pinned BOOLEAN DEFAULT FALSE"))
+                db.commit()
+            except Exception:
+                db.rollback()
+                
+            try:
+                db.execute(text("ALTER TABLE chat_sessions ADD COLUMN is_archived BOOLEAN DEFAULT FALSE"))
+                db.commit()
+            except Exception:
+                db.rollback()
     except Exception as e:
         print(f"Database migration notice: {e}")
         db.rollback()
@@ -82,7 +99,7 @@ def get_or_create_session(session_id: str, title: str = None) -> ChatSession:
     try:
         session = db.query(ChatSession).filter(ChatSession.id == session_id).first()
         if not session:
-            session = ChatSession(id=session_id, title=title or f"Chat Session {datetime.now().strftime('%b %d, %H:%M')}")
+            session = ChatSession(id=session_id, title=title or "New Chat")
             db.add(session)
             db.commit()
             db.refresh(session)
@@ -91,11 +108,14 @@ def get_or_create_session(session_id: str, title: str = None) -> ChatSession:
         db.close()
 
 
-def list_sessions(limit: int = 50):
-    """List all available chat sessions."""
+def list_sessions(include_archived: bool = False, limit: int = 50):
+    """List all available chat sessions, with pinned ones first, optionally excluding archived."""
     db = SessionLocal()
     try:
-        return db.query(ChatSession).order_by(ChatSession.created_at.desc()).limit(limit).all()
+        query = db.query(ChatSession)
+        if not include_archived:
+            query = query.filter(ChatSession.is_archived == False)
+        return query.order_by(ChatSession.is_pinned.desc(), ChatSession.created_at.desc()).limit(limit).all()
     finally:
         db.close()
 
@@ -226,5 +246,47 @@ def delete_history(document_name: str = None, session_id: str = None):
             query = query.filter(QAHistory.document_name == document_name)
         query.delete()
         db.commit()
+    finally:
+        db.close()
+
+
+def update_session_title(session_id: str, title: str) -> Optional[ChatSession]:
+    """Update the title of a specific chat session."""
+    db = SessionLocal()
+    try:
+        session = db.query(ChatSession).filter(ChatSession.id == session_id).first()
+        if session:
+            session.title = title
+            db.commit()
+            db.refresh(session)
+        return session
+    finally:
+        db.close()
+
+
+def pin_session(session_id: str, is_pinned: bool) -> Optional[ChatSession]:
+    """Toggle pin status of a specific chat session."""
+    db = SessionLocal()
+    try:
+        session = db.query(ChatSession).filter(ChatSession.id == session_id).first()
+        if session:
+            session.is_pinned = is_pinned
+            db.commit()
+            db.refresh(session)
+        return session
+    finally:
+        db.close()
+
+
+def archive_session(session_id: str, is_archived: bool) -> Optional[ChatSession]:
+    """Toggle archive status of a specific chat session."""
+    db = SessionLocal()
+    try:
+        session = db.query(ChatSession).filter(ChatSession.id == session_id).first()
+        if session:
+            session.is_archived = is_archived
+            db.commit()
+            db.refresh(session)
+        return session
     finally:
         db.close()
