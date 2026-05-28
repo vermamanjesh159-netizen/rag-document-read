@@ -10,7 +10,7 @@ python-dotenv
 pypdf2
 tiktoken
 pypdf
-sentence-transformers
+langchain-huggingface
 psycopg2-binary
 fastapi
 uvicorn

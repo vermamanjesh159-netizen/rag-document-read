@@ -20,7 +20,7 @@ All uploaded files, conversation history, and vectorized indexes are persisted l
 
 - **Backend**: FastAPI (Python), Uvicorn
 - **Database**: SQLite (SQLAlchemy ORM)
-- **NLP & Ingestion**: LangChain, FAISS, HuggingFace Embeddings (`all-MiniLM-L6-v2`)
+- **NLP & Ingestion**: LangChain, FAISS, Hugging Face Endpoint Embeddings (`all-MiniLM-L6-v2`)
 - **LLM Engine**: Groq Cloud API (customizable in `main.py`)
 - **Frontend**: Vanilla HTML5, CSS3, & modern JavaScript
 
@@ -66,6 +66,7 @@ erDiagram
 ### 1. Prerequisites
 - Python 3.10+
 - A Groq API Key (Sign up at [Groq Console](https://console.groq.com/))
+- A Hugging Face Access Token (Get a free token at [Hugging Face Settings](https://huggingface.co/settings/tokens))
 
 ### 2. Activate Virtual Environment
 ```bash
@@ -81,6 +82,7 @@ pip install -r requirements.txt
 Create a `.env` file in the root directory (or export directly to your environment):
 ```env
 GROQ_API_KEY=your_groq_api_key_here
+HUGGINGFACEHUB_API_TOKEN=your_huggingface_access_token_here
 DATABASE_URL=sqlite:///./rag_app.db
 ```
 

@@ -8,7 +8,7 @@ load_dotenv()
 try:
     from langchain_community.document_loaders import PyPDFLoader, TextLoader
     from langchain_text_splitters import RecursiveCharacterTextSplitter
-    from langchain_community.embeddings import HuggingFaceEmbeddings
+    from langchain_huggingface import HuggingFaceEndpointEmbeddings
     from langchain_community.vectorstores import FAISS
 except ImportError as e:
     print(f"❌ Import error: {e}")
@@ -46,11 +46,15 @@ def process_document(file_path):
         chunks = text_splitter.split_documents(documents)
         print(f"✅ Document split into {len(chunks)} chunks")
 
-        # Create local embeddings (free, no API key needed)
-        print("🔄 Creating embeddings (loading local model, first run may take a moment)...")
-        embeddings = HuggingFaceEmbeddings(
-            model_name="all-MiniLM-L6-v2",
-            model_kwargs={"device": "cpu"},
+        # Create Hugging Face endpoint embeddings (low memory, cloud API, free)
+        hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+        if not hf_token:
+            raise ValueError("HUGGINGFACEHUB_API_TOKEN environment variable is not configured.")
+
+        print("🔄 Creating embeddings (using Hugging Face Serverless API)...")
+        embeddings = HuggingFaceEndpointEmbeddings(
+            model="sentence-transformers/all-MiniLM-L6-v2",
+            huggingfacehub_api_token=hf_token
         )
 
         # Create vector store

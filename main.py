@@ -38,7 +38,7 @@ from database import (
     check_duplicate_document, delete_document_record
 )
 
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_community.vectorstores import FAISS
 
 # Our app logger
@@ -55,9 +55,10 @@ os.makedirs(VECTOR_STORES_DIR, exist_ok=True)
 init_db()
 
 # Load embeddings model once on startup to avoid reloading per request
-embeddings = HuggingFaceEmbeddings(
-    model_name="all-MiniLM-L6-v2",
-    model_kwargs={"device": "cpu"},
+hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN", "placeholder_token")
+embeddings = HuggingFaceEndpointEmbeddings(
+    model="sentence-transformers/all-MiniLM-L6-v2",
+    huggingfacehub_api_token=hf_token
 )
 
 # Cache for active session searchers in memory: session_id -> { "searcher": DocumentSearcher, "document_ids": List[str] }
@@ -300,6 +301,13 @@ def upload_document(
     file: UploadFile = File(...)
 ):
     """Upload a PDF or TXT file, link to a session, and start indexing."""
+    # Ensure HUGGINGFACEHUB_API_TOKEN is configured before uploading/processing
+    if not os.getenv("HUGGINGFACEHUB_API_TOKEN"):
+        raise HTTPException(
+            status_code=400,
+            detail="HUGGINGFACEHUB_API_TOKEN environment variable is not configured on the server. Hugging Face Access Token is required for free hosted embeddings."
+        )
+
     if not file.filename.endswith(('.pdf', '.txt')):
         raise HTTPException(
             status_code=400,
@@ -369,6 +377,13 @@ def upload_document(
 @app.post("/api/documents/{document_id}/retry")
 def retry_document_endpoint(document_id: str, background_tasks: BackgroundTasks):
     """Retry processing a failed document."""
+    # Ensure HUGGINGFACEHUB_API_TOKEN is configured before retrying
+    if not os.getenv("HUGGINGFACEHUB_API_TOKEN"):
+        raise HTTPException(
+            status_code=400,
+            detail="HUGGINGFACEHUB_API_TOKEN environment variable is not configured on the server."
+        )
+
     doc = get_document(document_id)
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found.")
@@ -452,6 +467,13 @@ def query_document(request: QueryRequest):
         raise HTTPException(
             status_code=400,
             detail="GROQ_API_KEY environment variable is not configured on the server."
+        )
+
+    # Ensure HUGGINGFACEHUB_API_TOKEN is configured
+    if not os.getenv("HUGGINGFACEHUB_API_TOKEN"):
+        raise HTTPException(
+            status_code=400,
+            detail="HUGGINGFACEHUB_API_TOKEN environment variable is not configured on the server."
         )
 
     # 1. Fetch the merged searcher for this session
