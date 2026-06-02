@@ -43,6 +43,8 @@ from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_groq import ChatGroq
 
+from health import router as health_router
+
 # Our app logger
 logger = logging.getLogger("rag-api")
 logger.setLevel(logging.INFO)
@@ -106,6 +108,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(health_router)
 
 
 class QueryRequest(BaseModel):
