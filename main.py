@@ -212,12 +212,22 @@ def get_or_load_session_searcher(session_id: str) -> DocumentSearcher:
 
 @app.get("/", response_class=HTMLResponse)
 def get_index():
-    """Serves the front-end playground."""
+    """Serves the SaaS product landing page."""
     try:
         with open("index.html", "r", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="index.html not found.")
+
+
+@app.get("/app", response_class=HTMLResponse)
+def get_app():
+    """Serves the interactive RAG playground."""
+    try:
+        with open("app.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="app.html not found.")
 
 
 @app.get("/favicon.ico", include_in_schema=False)
