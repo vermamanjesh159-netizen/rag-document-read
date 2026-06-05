@@ -36,7 +36,7 @@ async def check_db() -> Dict[str, Any]:
     finally:
         db.close()
 
-async def check_groq(perform_request: bool) -> Dict[str, Any]:
+async def check_groq() -> Dict[str, Any]:
     """Verify Groq API key configuration and active connectivity."""
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
@@ -44,13 +44,6 @@ async def check_groq(perform_request: bool) -> Dict[str, Any]:
             "status": "unconfigured",
             "latency_ms": None,
             "error": "GROQ_API_KEY environment variable is not configured"
-        }
-    
-    if not perform_request:
-        return {
-            "status": "healthy",
-            "latency_ms": None,
-            "error": "Skipped request (configured)"
         }
         
     start_time = time.time()
@@ -86,7 +79,7 @@ async def check_groq(perform_request: bool) -> Dict[str, Any]:
             "error": str(e)
         }
 
-async def check_huggingface(perform_request: bool) -> Dict[str, Any]:
+async def check_huggingface() -> Dict[str, Any]:
     """Verify Hugging Face API token configuration and endpoint connectivity."""
     token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
     if not token:
@@ -94,13 +87,6 @@ async def check_huggingface(perform_request: bool) -> Dict[str, Any]:
             "status": "unconfigured",
             "latency_ms": None,
             "error": "HUGGINGFACEHUB_API_TOKEN environment variable is not configured"
-        }
-    
-    if not perform_request:
-        return {
-            "status": "healthy",
-            "latency_ms": None,
-            "error": "Skipped request (configured)"
         }
         
     start_time = time.time()
@@ -252,23 +238,18 @@ def check_dependencies() -> Dict[str, Any]:
 
 @router.get("/api/health")
 @router.get("/health")
-async def health_check(
-    full: bool = Query(
-        False, 
-        description="Whether to perform full connectivity checks on external services (Groq, Hugging Face)"
-    )
-):
+async def health_check():
     """
     Health Check API.
     
     Verifies database connectivity, directory permissions, system resource stats, 
-    key package dependencies, and optional active connections to external services.
+    key package dependencies, and active connections to external services.
     """
     # Run critical checks concurrently
     db_result, groq_result, hf_result = await asyncio.gather(
         check_db(),
-        check_groq(perform_request=full),
-        check_huggingface(perform_request=full)
+        check_groq(),
+        check_huggingface()
     )
     
     dir_results = check_directories()
@@ -287,9 +268,9 @@ async def health_check(
     # Core health assessment
     if not (is_db_healthy and directories_healthy):
         overall_status = "unhealthy"
-    elif full and (groq_result["status"] == "unhealthy" or hf_result["status"] == "unhealthy"):
-        overall_status = "degraded"
     elif not (is_groq_healthy and is_hf_healthy):
+        overall_status = "degraded"
+    elif groq_result["status"] == "unhealthy" or hf_result["status"] == "unhealthy":
         overall_status = "degraded"
     elif sys_stats["disk"].get("used_percent", 0) > 90.0 or sys_stats["memory"].get("used_percent", 0) > 95.0 or not dependencies_healthy:
         overall_status = "degraded"
@@ -299,7 +280,6 @@ async def health_check(
     response_payload = {
         "status": overall_status,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "full_checks_performed": full,
         "components": {
             "database": db_result,
             "groq_api": groq_result,
