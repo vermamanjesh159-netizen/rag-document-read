@@ -41,7 +41,7 @@ async def check_groq(perform_request: bool) -> Dict[str, Any]:
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         return {
-            "status": "unhealthy",
+            "status": "unconfigured",
             "latency_ms": None,
             "error": "GROQ_API_KEY environment variable is not configured"
         }
@@ -91,7 +91,7 @@ async def check_huggingface(perform_request: bool) -> Dict[str, Any]:
     token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
     if not token:
         return {
-            "status": "unhealthy",
+            "status": "unconfigured",
             "latency_ms": None,
             "error": "HUGGINGFACEHUB_API_TOKEN environment variable is not configured"
         }
@@ -254,7 +254,7 @@ def check_dependencies() -> Dict[str, Any]:
 @router.get("/health")
 async def health_check(
     full: bool = Query(
-        True, 
+        False, 
         description="Whether to perform full connectivity checks on external services (Groq, Hugging Face)"
     )
 ):
@@ -277,8 +277,9 @@ async def health_check(
     
     # Assess overall status
     is_db_healthy = db_result["status"] == "healthy"
-    is_groq_healthy = groq_result["status"] == "healthy"
-    is_hf_healthy = hf_result["status"] == "healthy"
+    # external services can be either configured and healthy, or simply unconfigured (graceful degraded)
+    is_groq_healthy = groq_result["status"] in ("healthy", "unconfigured")
+    is_hf_healthy = hf_result["status"] in ("healthy", "unconfigured")
     
     directories_healthy = all(d["status"] == "healthy" for d in dir_results.values())
     dependencies_healthy = all(d["status"] == "available" for d in dep_results.values())
@@ -286,8 +287,10 @@ async def health_check(
     # Core health assessment
     if not (is_db_healthy and directories_healthy):
         overall_status = "unhealthy"
-    elif full and not (is_groq_healthy and is_hf_healthy):
-        overall_status = "unhealthy"
+    elif full and (groq_result["status"] == "unhealthy" or hf_result["status"] == "unhealthy"):
+        overall_status = "degraded"
+    elif not (is_groq_healthy and is_hf_healthy):
+        overall_status = "degraded"
     elif sys_stats["disk"].get("used_percent", 0) > 90.0 or sys_stats["memory"].get("used_percent", 0) > 95.0 or not dependencies_healthy:
         overall_status = "degraded"
     else:
@@ -301,9 +304,12 @@ async def health_check(
             "database": db_result,
             "groq_api": groq_result,
             "huggingface_api": hf_result,
-            "storage_directories": dir_results,
-            "dependencies": dep_results
+            "storage_directories": {
+                "documents": dir_results["documents"]
+            },
+            "vector_stores": dir_results["vector_stores"]
         },
+        "dependencies": dep_results,
         "system_metrics": sys_stats
     }
     
