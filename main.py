@@ -25,7 +25,7 @@ for logger_name in ["httpx", "huggingface_hub", "sentence_transformers", "urllib
 logging.basicConfig(level=logging.ERROR)
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Response, Form, BackgroundTasks
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import modules from our project

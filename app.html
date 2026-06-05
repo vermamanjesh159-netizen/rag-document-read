@@ -3,33 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliSearch — Workspace</title>
+    <title>IntelliSearch</title>
     <link rel="icon" type="image/png" href="/favicon.ico">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #07080d;
-            --bg-secondary: #0d0f1a;
-            --bg-tertiary: #141727;
+            --bg-primary: #0a0b10;
+            --bg-secondary: #11131e;
+            --bg-tertiary: #191c2d;
             --accent-purple: #8b5cf6;
-            --accent-purple-glow: rgba(139, 92, 246, 0.3);
+            --accent-purple-glow: rgba(139, 92, 246, 0.4);
             --accent-blue: #3b82f6;
-            --accent-blue-glow: rgba(59, 130, 246, 0.3);
+            --accent-blue-glow: rgba(59, 130, 246, 0.4);
             --accent-emerald: #10b981;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --text-muted: #6b7280;
-            --border-color: rgba(255, 255, 255, 0.05);
-            --border-hover: rgba(255, 255, 255, 0.12);
-            --radius-lg: 12px;
-            --radius-md: 8px;
-            --radius-sm: 4px;
-            --shadow-glow: 0 0 24px rgba(139, 92, 246, 0.15);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.15);
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -326,12 +324,14 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             color: var(--text-muted);
-            opacity: 0.3;
+            opacity: 0;
+            pointer-events: none;
             transition: var(--transition);
-            padding: 2px 4px;
-            border-radius: 3px;
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -339,6 +339,7 @@
 
         .session-item:hover .session-action-btn {
             opacity: 0.7;
+            pointer-events: auto;
         }
 
         .session-action-btn:hover {
@@ -1452,28 +1453,25 @@
         <aside class="sidebar">
             <div class="logo-section">
                 <div class="logo-icon">
-                    <i class="fas fa-brain"></i>
+                    <img src="/favicon.ico" alt="Logo" style="width: 24px; height: 24px; object-fit: contain;">
                 </div>
                 <div class="logo-text">
                     <h1>IntelliSearch</h1>
-                    <span style="font-size: 0.65rem; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; display: block; margin-top: -2px;">Workspace</span>
                 </div>
             </div>
 
             <!-- Conversations list -->
-            <div class="form-group" style="display: flex; flex-direction: column; max-height: 220px;">
+            <div class="form-group" style="display: flex; flex-direction: column; max-height: 360px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <span class="section-title" style="margin-bottom: 0;">Conversations</span>
                     <div style="display: flex; gap: 4px;">
                         <button id="btnToggleArchivedView" title="Toggle Active / Archived" style="background: none; border: 1px solid var(--border-color); color: var(--text-muted); cursor: pointer; font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; transition: all 0.2s;">
-                            <i class="fas fa-folder-open" style="margin-right: 3px;"></i> Active
+                            📁 Active
                         </button>
-                        <button class="btn-new-session" id="btnNewSession" title="New Chat" style="font-size: 0.72rem; padding: 2px 6px; border: 1px solid var(--accent-purple); border-radius: 4px; background: rgba(139, 92, 246, 0.1); color: #d8b4fe; font-weight: 600;">
-                            <i class="fas fa-plus"></i> New
-                        </button>
+                        <button class="btn-new-session" id="btnNewSession" title="New Chat" style="font-size: 0.72rem; padding: 2px 6px;">➕ New</button>
                     </div>
                 </div>
-                <div id="sessionsList" style="overflow-y: auto; display: flex; flex-direction: column; gap: 6px; max-height: 160px; background: rgba(0,0,0,0.12); padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <div id="sessionsList" style="overflow-y: auto; display: flex; flex-direction: column; gap: 6px; max-height: 300px; background: rgba(0,0,0,0.12); padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
                     <!-- Active/Archived sessions listed here -->
                 </div>
             </div>
@@ -1483,7 +1481,7 @@
                 <span class="section-title">Ingest Document</span>
                 <div class="upload-card" id="dropzone">
                     <input type="file" id="fileInput" accept=".pdf,.txt">
-                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <div class="upload-icon">📤</div>
                     <div class="upload-title">Choose file or drag here</div>
                     <div class="upload-subtitle">PDF or TXT (Max 20MB)</div>
                     <div class="progress-bar-container" id="progressContainer">
@@ -1518,9 +1516,6 @@
                     <div class="tabs">
                         <button class="tab active" data-target="chatPane">Chat Playground</button>
                         <button class="tab" data-target="historyPane">Chat History</button>
-                        <button id="btnShareChat" class="btn-action" title="Share Chat" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); cursor: pointer; transition: all 0.2s ease;">
-                            <span>Share</span>
-                        </button>
                     </div>
                     <div>
                         <button id="btnThemeToggle" class="btn-action" title="Toggle Theme" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); cursor: pointer; transition: all 0.2s ease;">
@@ -1528,7 +1523,7 @@
                         </button>
                     </div>
                 </div>
-                <button id="btnToggleRightPanel" class="mobile-toggle-btn" title="Toggle References">📖</button>
+                <button id="btnToggleRightPanel" class="mobile-toggle-btn" title="How It Works"><i class="fas fa-info-circle"></i></button>
             </header>
 
             <!-- Workspace Panes -->
@@ -1537,28 +1532,9 @@
                 <div class="pane active" id="chatPane">
                     <div class="chat-history" id="chatHistory">
                         <div class="empty-chat" id="emptyChat">
-                            <div class="empty-chat-icon" style="animation: pulse-glow 2s infinite ease-in-out; margin-bottom: 8px;"><i class="fas fa-brain"></i></div>
-                            <h3>Knowledge Workspace</h3>
-                            <p style="margin-bottom: 24px;">Upload documents in the left panel to build your dynamic session vector space, then query their contents here.</p>
-                            
-                            <div class="prompt-suggestions-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; max-width: 500px; text-align: left;">
-                                <div class="suggestion-card" onclick="useSuggestedPrompt('Summarize key obligations and milestones in this document.')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
-                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-file-contract" style="color: var(--accent-purple); margin-right: 6px;"></i> Contract Summary</strong>
-                                    Summarize key obligations and milestones.
-                                </div>
-                                <div class="suggestion-card" onclick="useSuggestedPrompt('List the main technical requirements mentioned.')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
-                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-cogs" style="color: var(--accent-blue); margin-right: 6px;"></i> Tech Spec Lookup</strong>
-                                    List the main technical requirements mentioned.
-                                </div>
-                                <div class="suggestion-card" onclick="useSuggestedPrompt('Are there any confidentiality or liability caps?')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
-                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-shield-alt" style="color: var(--accent-emerald); margin-right: 6px;"></i> Compliance Audit</strong>
-                                    Are there any confidentiality or liability caps?
-                                </div>
-                                <div class="suggestion-card" onclick="useSuggestedPrompt('Compare specifications between the uploaded documents.')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
-                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-exchange-alt" style="color: #f59e0b; margin-right: 6px;"></i> Multi-Doc Compare</strong>
-                                    Compare specifications between the documents.
-                                </div>
-                            </div>
+                            <div class="empty-chat-icon">💡</div>
+                            <h3>Welcome to IntelliSearch</h3>
+                            <p>Query your document knowledge base in real-time. Upload one or more PDFs or TXTs in the sidebar. IntelliSearch will automatically extract, index, and prepare the content for RAG queries. Your conversations and files are persistent and securely stored.</p>
                         </div>
                     </div>
 
@@ -1665,44 +1641,66 @@
         <!-- Right Panel -->
         <aside class="right-panel">
             <div class="right-panel-header">
-                <h3>Document References</h3>
+                <h3><i class="fas fa-info-circle" style="color: var(--accent-purple);"></i> How It Works</h3>
             </div>
             
-            <div class="right-panel-section">
-                <div id="sourcesContainer">
-                    <div class="empty-sources">
-                        <div class="empty-sources-icon">📖</div>
-                        <div style="text-align: left; line-height: 1.5; color: var(--text-secondary); font-size: 0.8rem;">
-                            <p style="font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">How it works:</p>
-                            <ol style="margin-left: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px;">
-                                <li><strong>Upload</strong> PDF or TXT documents using the sidebar.</li>
-                                <li><strong>Wait</strong> for the status badge to show <span style="background-color: rgba(16, 185, 129, 0.1); color: var(--accent-emerald); padding: 1px 6px; border-radius: 10px; font-size: 0.65rem; border: 1px solid rgba(16, 185, 129, 0.2);">ready</span>.</li>
-                                <li><strong>Query</strong> your documents by typing in the chat. The retrieved evidence will display here.</li>
-                            </ol>
-                            <p style="font-weight: 600; margin-bottom: 6px; color: var(--text-primary); border-top: 1px solid var(--border-color); padding-top: 10px;">Resources:</p>
-                            <div style="display: flex; flex-direction: column; gap: 4px;">
-                                <a href="https://huggingface.co/models" target="_blank" style="color: var(--accent-blue); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">🔗 Hugging Face Models</a>
-                                <a href="https://python.langchain.com/docs/tutorials/rag/" target="_blank" style="color: var(--accent-purple); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">🔗 LangChain RAG Guide</a>
-                            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px; flex: 1;">
+                <div id="sourcesContainer" style="display: none;"></div>
+                
+                <!-- Product Overview -->
+                <div style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary);">
+                    IntelliSearch is an enterprise-grade **Session-Isolated Knowledge Engine**. It uses secure vectors to index complex files and synthesize answers with zero hallucination.
+                </div>
+
+                <!-- Step-by-Step workflow -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <span class="right-panel-section-title">Workflow Pipeline</span>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; gap: 12px; align-items: flex-start;">
+                        <div style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;"><i class="fas fa-upload"></i></div>
+                        <div>
+                            <h5 style="color: white; margin: 0 0 2px 0; font-size: 0.8rem; font-weight: 600;">1. Drop Documents</h5>
+                            <p style="margin: 0; font-size: 0.72rem; line-height: 1.4; color: var(--text-muted);">Upload PDF or TXT files using the sidebar to instantiate the session context.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; gap: 12px; align-items: flex-start;">
+                        <div style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue); width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;"><i class="fas fa-fingerprint"></i></div>
+                        <div>
+                            <h5 style="color: white; margin: 0 0 2px 0; font-size: 0.8rem; font-weight: 600;">2. Embed & Index</h5>
+                            <p style="margin: 0; font-size: 0.72rem; line-height: 1.4; color: var(--text-muted);">Text is parsed, chunked, and embedded into private vectors instantly.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; display: flex; gap: 12px; align-items: flex-start;">
+                        <div style="background: rgba(16, 185, 129, 0.1); color: var(--accent-emerald); width: 28px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;"><i class="fas fa-comment-dots"></i></div>
+                        <div>
+                            <h5 style="color: white; margin: 0 0 2px 0; font-size: 0.8rem; font-weight: 600;">3. Semantic Chat</h5>
+                            <p style="margin: 0; font-size: 0.72rem; line-height: 1.4; color: var(--text-muted);">Query the index. Relevant text is synthesized into answers with precise citations.</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Trust and Isolation banner -->
+                <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(59, 130, 246, 0.05)); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 6px;">
+                    <h5 style="color: white; margin: 0; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 6px;"><i class="fas fa-user-shield" style="color: var(--accent-purple);"></i> Session Sovereignty</h5>
+                    <p style="margin: 0; font-size: 0.72rem; line-height: 1.4; color: var(--text-secondary);">
+                        Each workspace operates inside an isolated vector space. Data never leaks across sessions, and clearing history permanently purges database storage.
+                    </p>
+                </div>
             </div>
 
-            <div class="right-panel-section" style="margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <!-- Footer Stats -->
+            <div class="right-panel-section" style="margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 16px;">
                 <span class="right-panel-section-title">Session Stats</span>
-                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem; color: var(--text-secondary); margin-top: 8px;">
-                    <div style="display: grid; grid-template-columns: 95px 1fr; align-items: start; gap: 8px;">
-                        <span>Active Docs:</span>
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.78rem; color: var(--text-secondary); margin-top: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Active Documents:</span>
                         <strong id="activeDocsCount" style="color: var(--text-primary);">0</strong>
                     </div>
-                    <div style="display: grid; grid-template-columns: 95px 1fr; align-items: start; gap: 8px;">
-                        <span>Embedding:</span>
-                        <strong style="color: var(--accent-blue); word-break: break-all;">all-MiniLM-L6-v2</strong>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 95px 1fr; align-items: start; gap: 8px;">
-                        <span>LLM Model:</span>
-                        <strong style="color: var(--accent-purple); word-break: break-all;">llama-3.1-8b</strong>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Current Session ID:</span>
+                        <strong id="currentSessionIDVal" style="color: var(--text-muted); font-size: 0.7rem; font-family: monospace; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">-</strong>
                     </div>
                 </div>
             </div>
@@ -1745,16 +1743,6 @@
         let documents = [];
         let pollingInterval = null;
         let showArchivedChats = false;
-
-        // Suggested prompt action handler
-        function useSuggestedPrompt(text) {
-            if (chatInput.disabled) {
-                showToast("Please upload a document first to start chatting.", "warning");
-                return;
-            }
-            chatInput.value = text;
-            chatInput.focus();
-        }
 
         // Tab Switching
         const tabs = document.querySelectorAll('.tab');
@@ -1895,12 +1883,12 @@
 
                 item.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 4px; overflow: hidden; flex: 1;">
-                        ${sess.is_pinned ? `<img src="/pin.png" style="width: 11px; height: 11px; ${pinFilterActive} object-fit: contain;" title="Pinned Chat">` : ''}
+                        ${sess.is_pinned ? `<img src="/pin.png" style="width: 13px; height: 13px; ${pinFilterActive} object-fit: contain;" title="Pinned Chat">` : ''}
                         <span class="session-item-title" title="${sess.title || sess.id}">${sess.title || defaultTitle}</span>
                     </div>
                     <div style="display: flex; gap: 2px;">
                         <button class="session-action-btn" onclick="togglePin('${sess.id}', ${!sess.is_pinned}, event)" title="${sess.is_pinned ? 'Unpin Chat' : 'Pin Chat'}">
-                            <img src="/pin.png" style="width: 12px; height: 12px; ${sess.is_pinned ? pinFilterActive : pinFilterInactive} object-fit: contain;">
+                            <img src="/pin.png" style="width: 14px; height: 14px; ${sess.is_pinned ? pinFilterActive : pinFilterInactive} object-fit: contain;">
                         </button>
                         <button class="session-action-btn" onclick="toggleArchive('${sess.id}', ${!sess.is_archived}, event)" title="${sess.is_archived ? 'Unarchive Chat' : 'Archive Chat'}">
                             📦
@@ -1947,6 +1935,10 @@
             }
 
             // Clear retrieved sources to default state
+            const sessIdEl = document.getElementById('currentSessionIDVal');
+            if (sessIdEl) {
+                sessIdEl.textContent = sessionId;
+            }
             renderRetrievedSources([]);
 
             // Load data
@@ -2409,15 +2401,17 @@
             await loadSessions();
         });
 
-        btnShareChat.addEventListener('click', () => {
-            const shareUrl = `${window.location.origin}${window.location.pathname}?session_id=${activeSessionId}`;
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                showToast("Share link copied to clipboard!");
-            }).catch(err => {
-                console.error("Could not copy text: ", err);
-                showToast("Failed to copy share link.", "error");
+        if (btnShareChat) {
+            btnShareChat.addEventListener('click', () => {
+                const shareUrl = `${window.location.origin}${window.location.pathname}?session_id=${activeSessionId}`;
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showToast("Share link copied to clipboard!");
+                }).catch(err => {
+                    console.error("Could not copy text: ", err);
+                    showToast("Failed to copy share link.", "error");
+                });
             });
-        });
+        }
 
         async function togglePin(sessionId, pinStatus, event) {
             if (event) event.stopPropagation();
@@ -2463,45 +2457,9 @@
         }
 
         // Render matching source chunks in the right panel
+        // Render matching source chunks in the right panel
         function renderRetrievedSources(sources) {
-            const container = document.getElementById('sourcesContainer');
-            if (!container) return;
-
-            if (!sources || sources.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-sources">
-                        <div class="empty-sources-icon">📖</div>
-                        <div style="text-align: left; line-height: 1.5; color: var(--text-secondary); font-size: 0.8rem;">
-                            <p style="font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">How it works:</p>
-                            <ol style="margin-left: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px;">
-                                <li><strong>Upload</strong> PDF or TXT documents using the sidebar.</li>
-                                <li><strong>Wait</strong> for the status badge to show <span style="background-color: rgba(16, 185, 129, 0.1); color: var(--accent-emerald); padding: 1px 6px; border-radius: 10px; font-size: 0.65rem; border: 1px solid rgba(16, 185, 129, 0.2);">ready</span>.</li>
-                                <li><strong>Query</strong> your documents by typing in the chat. The retrieved evidence will display here.</li>
-                            </ol>
-                            <p style="font-weight: 600; margin-bottom: 6px; color: var(--text-primary); border-top: 1px solid var(--border-color); padding-top: 10px;">Resources:</p>
-                            <div style="display: flex; flex-direction: column; gap: 4px;">
-                                <a href="https://huggingface.co/models" target="_blank" style="color: var(--accent-blue); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">🔗 Hugging Face Models</a>
-                                <a href="https://python.langchain.com/docs/tutorials/rag/" target="_blank" style="color: var(--accent-purple); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">🔗 LangChain RAG Guide</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = '';
-            sources.forEach(src => {
-                const card = document.createElement('div');
-                card.className = 'source-card';
-                card.innerHTML = `
-                    <div class="source-card-header">
-                        <span class="source-card-docname" title="${src.filename}">${src.filename}</span>
-                        <span class="source-card-page">Page ${src.page}</span>
-                    </div>
-                    <div class="source-card-content">${src.content.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
-                `;
-                container.appendChild(card);
-            });
+            // Replaced Document References panel with static product info.
         }
 
         // Theme Toggling Logic

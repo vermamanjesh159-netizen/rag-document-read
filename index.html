@@ -928,14 +928,376 @@
                 border-bottom: none;
                 padding-bottom: 0;
             }
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
-            }
+        }
+
+        /* Billing Toggle Panel */
+        .billing-toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: -16px;
+            margin-bottom: 48px;
+        }
+
+        .billing-toggle-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .billing-toggle-label.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .billing-toggle-switch {
+            width: 56px;
+            height: 28px;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .billing-toggle-switch:hover {
+            border-color: var(--border-hover);
+        }
+
+        .billing-toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .billing-toggle-switch.yearly .billing-toggle-knob {
+            left: 30px;
+        }
+
+        .discount-badge {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        /* Testimonials Section */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .testimonial-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
+
+        .testimonial-stars {
+            color: #fbbf24;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 4px;
+        }
+
+        .testimonial-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .testimonial-user {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .testimonial-meta h5 {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .testimonial-meta p {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-top: 2px;
+        }
+
+        /* Bottom CTA Section */
+        .bottom-cta {
+            position: relative;
+            padding: 100px 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .cta-banner {
+            background: linear-gradient(135deg, rgba(20, 23, 39, 0.8) 0%, rgba(13, 15, 26, 0.95) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 60px 40px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .cta-banner::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cta-banner h3 {
+            font-size: 2.4rem;
+            color: white;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-banner p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 12px;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-input {
+            flex: 1;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .cta-input:focus {
+            border-color: var(--accent-purple);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+
+        /* Modern SaaS Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(7, 8, 13, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6), var(--shadow-glow);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.open .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: white;
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .modal-header h4 {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .modal-header p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .modal-input {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .modal-input:focus {
+            border-color: var(--accent-purple);
+            outline: none;
+        }
+
+        .modal-select {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 16px) center;
+        }
+
+        .modal-select:focus {
+            border-color: var(--accent-purple);
+            outline: none;
+        }
+
+        /* Success Step Styling */
+        .modal-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+            padding: 20px 0;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--accent-emerald);
+            border: 2px solid var(--accent-emerald);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
         }
     </style>
 </head>
@@ -955,13 +1317,6 @@
                     <span>Enterprise RAG</span>
                 </div>
             </div>
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#benefits">Benefits</a></li>
-                <li><a href="#use-cases">Use Cases</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#architecture">Architecture</a></li>
-            </ul>
             <div class="nav-actions">
                 <a href="/app" class="btn btn-primary">Launch Platform <i class="fas fa-arrow-right"></i></a>
             </div>
@@ -980,7 +1335,6 @@
             </p>
             <div class="hero-cta">
                 <a href="/app" class="btn btn-primary">Try the Playground <i class="fas fa-arrow-right"></i></a>
-                <a href="#features" class="btn btn-outline">Explore Features</a>
             </div>
 
             <!-- App Mockup Preview -->
@@ -1080,263 +1434,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features">
-        <div class="container">
-            <div class="section-header">
-                <span>Enterprise Core</span>
-                <h3>Engineered for High-Speed Context Retrieval</h3>
-                <p>IntelliSearch couples low-latency embeddings with localized indexing structures for instant document insights.</p>
-            </div>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-cubes"></i></div>
-                    <h4>Session-Isolated RAG</h4>
-                    <p>Keep your conversations and research documents structured. Group multiple files per session and switch instantly. Contexts never cross-pollinate.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                    <h4>Dynamic Index Merging</h4>
-                    <p>Vector databases are built per-document asynchronously. During query runtime, they merge dynamically in-memory. Add or delete documents with zero database downtime.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
-                    <h4>Groq Inference Engine</h4>
-                    <p>Leverages ultra-fast Llama models on Groq Cloud API for near-instant responses. Combines local document knowledge and powerful synthesis logic.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Benefits Section -->
-    <section id="benefits" style="background-color: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
-        <div class="container">
-            <div class="benefits-wrapper">
-                <div class="benefits-img">
-                    <div class="benefit-stats-card">
-                        <div class="benefit-stat-num">&lt; 3.0s</div>
-                        <div class="benefit-stat-label">Average document ingestion time</div>
-                    </div>
-                    <div class="benefit-stats-card">
-                        <div class="benefit-stat-num">100%</div>
-                        <div class="benefit-stat-label">Isolated session & context privacy</div>
-                    </div>
-                    <div class="benefit-stats-card">
-                        <div class="benefit-stat-num">&lt; 800ms</div>
-                        <div class="benefit-stat-label">Groq synthesis latency</div>
-                    </div>
-                </div>
-                <div class="benefits-text">
-                    <div class="section-header" style="text-align: left; margin: 0 0 40px 0;">
-                        <span>The Value</span>
-                        <h3>Why Enterprise Teams Choose IntelliSearch</h3>
-                    </div>
-
-                    <div class="benefit-item">
-                        <div class="benefit-bullet"><i class="fas fa-lock"></i></div>
-                        <div class="benefit-text">
-                            <h4>Zero Data Exposure</h4>
-                            <p>All embeddings, documents, FAISS indices, and databases are stored locally inside the project environment. No third-party vector store cloud accounts required.</p>
-                        </div>
-                    </div>
-
-                    <div class="benefit-item">
-                        <div class="benefit-bullet"><i class="fas fa-tachometer-alt"></i></div>
-                        <div class="benefit-text">
-                            <h4>Blazing Fast Ingestion</h4>
-                            <p>No waiting in queues. Fast-API async background tasks process, parse, chunk, and embed documents in seconds so they are ready for querying instantly.</p>
-                        </div>
-                    </div>
-
-                    <div class="benefit-item">
-                        <div class="benefit-bullet"><i class="fas fa-quote-right"></i></div>
-                        <div class="benefit-text">
-                            <h4>Verifiable Source Citations</h4>
-                            <p>Eliminate hallucination completely. Answers are generated strictly based on provided sources and contain references to the source file name and chunk context.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Use Cases Section -->
-    <section id="use-cases">
-        <div class="container">
-            <div class="section-header">
-                <span>Versatile Contexts</span>
-                <h3>Tailored for Modern Information Retrieval</h3>
-                <p>See how different sectors leverage session-based document synthesis to save time and work smarter.</p>
-            </div>
-
-            <div class="use-case-tabs">
-                <div class="use-case-tab active" onclick="switchUseCase(0)">Legal / Contracts</div>
-                <div class="use-case-tab" onclick="switchUseCase(1)">Technical Docs</div>
-                <div class="use-case-tab" onclick="switchUseCase(2)">Corporate SOPs</div>
-            </div>
-
-            <!-- Tab 1: Legal -->
-            <div class="use-case-content active">
-                <div class="use-case-info">
-                    <h4>Analyze and Auditing Contracts Instantly</h4>
-                    <p>Legal teams upload lease agreements, vendor contracts, and NDAs. Isolate sessions by clients or projects to compare details without cross-contamination.</p>
-                    <ul class="use-case-bullets">
-                        <li><i class="fas fa-check-circle"></i> Identify liability caps and indemnity clauses</li>
-                        <li><i class="fas fa-check-circle"></i> Detect conflicting terms across multiple contracts</li>
-                        <li><i class="fas fa-check-circle"></i> Trace governing law jurisdictions instantly</li>
-                    </ul>
-                </div>
-                <div class="use-case-preview">
-                    <div class="uc-q-bubble">What is the notice period for contract termination in Exhibit B?</div>
-                    <div class="uc-a-bubble">
-                        According to Section 4.2 of Exhibit B, either party may terminate the agreement by providing at least <strong>60 days</strong> written notice to the other party.
-                        <span class="uc-source"><i class="fas fa-file-alt"></i> lease_agreement_ex_b.pdf</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 2: Technical -->
-            <div class="use-case-content">
-                <div class="use-case-info">
-                    <h4>Navigate Complex Technical Documentation</h4>
-                    <p>Developers and engineers upload hardware spec sheets, API manuals, and code documentation. Query variables, parameters, and error codes in one unified interface.</p>
-                    <ul class="use-case-bullets">
-                        <li><i class="fas fa-check-circle"></i> Pull setup configurations for microservices</li>
-                        <li><i class="fas fa-check-circle"></i> Search database indexing protocols</li>
-                        <li><i class="fas fa-check-circle"></i> Retrieve schema syntax rules</li>
-                    </ul>
-                </div>
-                <div class="use-case-preview">
-                    <div class="uc-q-bubble">How do I configure custom caching middleware settings?</div>
-                    <div class="uc-a-bubble">
-                        To enable custom caching, set the <code>CACHE_MIDDLEWARE_SECONDS</code> environment parameter in your configuration file to the desired TTL in seconds.
-                        <span class="uc-source"><i class="fas fa-file-alt"></i> fastapi_developer_manual.pdf</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 3: Corporate -->
-            <div class="use-case-content">
-                <div class="use-case-info">
-                    <h4>Onboard & Inform Employees via SOPs</h4>
-                    <p>Human Resources and operations teams index employee handbooks, expense guidelines, and Standard Operating Procedures. New hires find answers instantly.</p>
-                    <ul class="use-case-bullets">
-                        <li><i class="fas fa-check-circle"></i> Review travel and reimbursement policies</li>
-                        <li><i class="fas fa-check-circle"></i> Outline security clearance standards</li>
-                        <li><i class="fas fa-check-circle"></i> Look up healthcare benefit rules</li>
-                    </ul>
-                </div>
-                <div class="use-case-preview">
-                    <div class="uc-q-bubble">What is the daily maximum allowance for business meals?</div>
-                    <div class="uc-a-bubble">
-                        The maximum daily meal allowance for business travel is capped at <strong>$75.00</strong>. Receipts are required for all transactions over $25.00.
-                        <span class="uc-source"><i class="fas fa-file-alt"></i> travel_and_expense_policy_2026.txt</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section id="pricing" style="background-color: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
-        <div class="container">
-            <div class="section-header">
-                <span>Pricing Plans</span>
-                <h3>Flexible SaaS Pricing Options</h3>
-                <p>Choose the model that fits your scope—from single developer sandboxes to dedicated enterprise deployments.</p>
-            </div>
-
-            <div class="pricing-wrapper">
-                <!-- Free Plan -->
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h4>Developer Free</h4>
-                        <p>Perfect for testing and lightweight local RAG querying.</p>
-                    </div>
-                    <div class="pricing-price">$0<span>/month</span></div>
-                    <ul class="pricing-bullets">
-                        <li><i class="fas fa-check"></i> SQLite Local Database</li>
-                        <li><i class="fas fa-check"></i> Up to 3 Active Sessions</li>
-                        <li><i class="fas fa-check"></i> Standard Background Ingestion</li>
-                        <li class="disabled"><i class="fas fa-times"></i> Session Pinning & Archiving</li>
-                        <li class="disabled"><i class="fas fa-times"></i> High-performance Postgres Database</li>
-                        <li class="disabled"><i class="fas fa-times"></i> Dedicated support SLA</li>
-                    </ul>
-                    <a href="/app" class="btn btn-outline">Launch Free Playground</a>
-                </div>
-
-                <!-- Pro Plan -->
-                <div class="pricing-card popular">
-                    <div class="pricing-popular-badge">Popular</div>
-                    <div class="pricing-header">
-                        <h4>Startup Pro</h4>
-                        <p>Best for growing teams and researchers with high document volume.</p>
-                    </div>
-                    <div class="pricing-price">$49<span>/month</span></div>
-                    <ul class="pricing-bullets">
-                        <li><i class="fas fa-check"></i> SQLite / PostgreSQL scaling</li>
-                        <li><i class="fas fa-check"></i> Up to 50 Active Sessions</li>
-                        <li><i class="fas fa-check"></i> High Priority background queue</li>
-                        <li><i class="fas fa-check"></i> Session Pinning & Archiving</li>
-                        <li><i class="fas fa-check"></i> Export Chat History (JSON/Markdown)</li>
-                        <li class="disabled"><i class="fas fa-times"></i> Custom domain integrations</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="alert('Pricing subscription flow is mock; launch the free app to test fully!')">Get Started Pro</button>
-                </div>
-
-                <!-- Enterprise Plan -->
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h4>Enterprise</h4>
-                        <p>For large organizations with strict security standards.</p>
-                    </div>
-                    <div class="pricing-price">Custom<span>/annually</span></div>
-                    <ul class="pricing-bullets">
-                        <li><i class="fas fa-check"></i> Dedicated Host (AWS / GCP / Render)</li>
-                        <li><i class="fas fa-check"></i> Unlimited Sessions & Documents</li>
-                        <li><i class="fas fa-check"></i> Dedicated DB with <code>pgvector</code></li>
-                        <li><i class="fas fa-check"></i> Custom Domain & Auth integration</li>
-                        <li><i class="fas fa-check"></i> Private Groq/Hugging Face Endpoints</li>
-                        <li><i class="fas fa-check"></i> 99.9% Uptime Guarantee</li>
-                    </ul>
-                    <button class="btn btn-outline" onclick="alert('Contact vermamanjesh159-netizen via GitHub to schedule an Enterprise demo!')">Contact Sales</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Architecture & Health Section -->
-    <section id="architecture">
-        <div class="container">
-            <div class="section-header">
-                <span>Architecture Observability</span>
-                <h3>Real-Time Infrastructure Health</h3>
-                <p>IntelliSearch features a live self-monitoring system. Below are active stats from the current backend deployment.</p>
-            </div>
-
-            <!-- API Status Metrics -->
-            <div class="api-status-card">
-                <div class="api-status-item">
-                    <span class="api-status-lbl">Database Connection</span>
-                    <span class="api-status-val" id="db-status"><i class="fas fa-circle-notch fa-spin" style="color: var(--text-muted);"></i> Querying...</span>
-                </div>
-                <div class="api-status-item">
-                    <span class="api-status-lbl">Groq Cloud API</span>
-                    <span class="api-status-val" id="groq-status"><i class="fas fa-circle-notch fa-spin" style="color: var(--text-muted);"></i> Querying...</span>
-                </div>
-                <div class="api-status-item">
-                    <span class="api-status-lbl">Hugging Face Embeddings</span>
-                    <span class="api-status-val" id="hf-status"><i class="fas fa-circle-notch fa-spin" style="color: var(--text-muted);"></i> Querying...</span>
-                </div>
-                <div class="api-status-item">
-                    <span class="api-status-lbl">System Storage</span>
-                    <span class="api-status-val" id="storage-status"><i class="fas fa-circle-notch fa-spin" style="color: var(--text-muted);"></i> Querying...</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -1379,12 +1476,49 @@
                 <p>&copy; 2026 IntelliSearch. All rights reserved.</p>
                 <div class="social-links">
                     <a href="https://github.com/vermamanjesh159-netizen" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Interactive SaaS Demo Modal -->
+    <div class="modal-overlay" id="saasModal">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeSaaSModal()"><i class="fas fa-times"></i></button>
+            <div id="modalFormStep">
+                <div class="modal-header">
+                    <h4 id="modalTitle">Create Your Free Sandbox</h4>
+                    <p id="modalSubtitle">Start indexing and querying your documents instantly.</p>
+                </div>
+                <form class="modal-form" onsubmit="handleModalSubmit(event)">
+                    <div class="modal-group">
+                        <label class="modal-label">Full Name</label>
+                        <input type="text" class="modal-input" placeholder="John Doe" required id="modal-name">
+                    </div>
+                    <div class="modal-group">
+                        <label class="modal-label">Business Email</label>
+                        <input type="email" class="modal-input" placeholder="john@company.com" required id="modal-email">
+                    </div>
+                    <div class="modal-group">
+                        <label class="modal-label">Primary Use Case</label>
+                        <select class="modal-select" required id="modal-usecase">
+                            <option value="legal">Legal & Contract Auditing</option>
+                            <option value="technical">Technical Documentation Search</option>
+                            <option value="corporate">Corporate SOPs & Onboarding</option>
+                            <option value="research">Academic / Patent Research</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 8px; justify-content: center;">Deploy My Sandbox <i class="fas fa-rocket"></i></button>
+                </form>
+            </div>
+            <div class="modal-success" id="modalSuccessStep">
+                <div class="success-icon"><i class="fas fa-check"></i></div>
+                <h3>Sandbox Ready!</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;">Your private document-isolated workspace has been successfully provisioned. We've sent details to your inbox.</p>
+                <button class="btn btn-outline" onclick="closeSaaSModal()" style="width: 100%; justify-content: center;">Back to Website</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Header Shadow Scroll Transition
@@ -1476,6 +1610,146 @@
 
         // Run health query on page load
         document.addEventListener('DOMContentLoaded', fetchSystemHealth);
+
+        // Billing Cycle & Pricing Switcher Logic
+        let currentBillingCycle = 'monthly';
+
+        function toggleBillingCycle() {
+            const switchEl = document.getElementById('billingSwitch');
+            if (currentBillingCycle === 'monthly') {
+                currentBillingCycle = 'yearly';
+                switchEl.classList.add('yearly');
+            } else {
+                currentBillingCycle = 'monthly';
+                switchEl.classList.remove('yearly');
+            }
+            updatePricingUI();
+        }
+
+        function setBillingCycle(cycle) {
+            const switchEl = document.getElementById('billingSwitch');
+            currentBillingCycle = cycle;
+            if (cycle === 'yearly') {
+                switchEl.classList.add('yearly');
+            } else {
+                switchEl.classList.remove('yearly');
+            }
+            updatePricingUI();
+        }
+
+        function updatePricingUI() {
+            const monthlyLbl = document.getElementById('billing-monthly-lbl');
+            const yearlyLbl = document.getElementById('billing-yearly-lbl');
+            const proPriceVal = document.getElementById('pro-price-val');
+            const proPricePeriod = document.getElementById('pro-price-period');
+
+            if (currentBillingCycle === 'yearly') {
+                monthlyLbl.classList.remove('active');
+                yearlyLbl.classList.add('active');
+                
+                // Animate value change
+                animateNumber(proPriceVal, 49, 39, '$');
+                proPricePeriod.innerText = '/month (billed annually)';
+            } else {
+                monthlyLbl.classList.add('active');
+                yearlyLbl.classList.remove('active');
+                
+                // Animate value change
+                animateNumber(proPriceVal, 39, 49, '$');
+                proPricePeriod.innerText = '/month';
+            }
+        }
+
+        function animateNumber(element, start, end, prefix = '') {
+            let current = start;
+            const step = end > start ? 1 : -1;
+            const interval = setInterval(() => {
+                current += step;
+                element.innerText = prefix + current;
+                if (current === end) {
+                    clearInterval(interval);
+                }
+            }, 15);
+        }
+
+        // Interactive SaaS Onboarding Modal Controls
+        function openSaaSModal(context) {
+            const modal = document.getElementById('saasModal');
+            const formStep = document.getElementById('modalFormStep');
+            const successStep = document.getElementById('modalSuccessStep');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSubtitle = document.getElementById('modalSubtitle');
+            
+            // Set modal contextual texts
+            if (context.includes('Pro')) {
+                modalTitle.innerText = 'Upgrade to Startup Pro';
+                modalSubtitle.innerText = 'Access high-priority ingestion queues and dedicated context memory.';
+            } else if (context.includes('Enterprise')) {
+                modalTitle.innerText = 'Request Enterprise Demo';
+                modalSubtitle.innerText = 'Let us deploy a dedicated, high-performance RAG environment for your organization.';
+            } else {
+                modalTitle.innerText = 'Provision Your Free Sandbox';
+                modalSubtitle.innerText = 'Upload documents and query them instantly in your isolated session.';
+            }
+
+            // Reset step visibility
+            formStep.style.display = 'block';
+            successStep.style.display = 'none';
+
+            // Show modal
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSaaSModal() {
+            const modal = document.getElementById('saasModal');
+            modal.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleModalSubmit(event) {
+            event.preventDefault();
+            const formStep = document.getElementById('modalFormStep');
+            const successStep = document.getElementById('modalSuccessStep');
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+
+            // Show mock loader/deployment step
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Provisioning Environment...';
+
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                
+                // Transition to success step
+                formStep.style.display = 'none';
+                successStep.style.display = 'flex';
+            }, 1200);
+        }
+
+        function submitCtaEmail() {
+            const emailInput = document.getElementById('cta-email-input');
+            const emailValue = emailInput.value.trim();
+            
+            if (!emailValue || !emailValue.includes('@')) {
+                alert('Please enter a valid business email address.');
+                emailInput.focus();
+                return;
+            }
+
+            // Open modal with prefilled email
+            openSaaSModal('Bottom CTA');
+            document.getElementById('modal-email').value = emailValue;
+            emailInput.value = '';
+        }
+
+        // Close modal when clicking outside container
+        document.getElementById('saasModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSaaSModal();
+            }
+        });
     </script>
 </body>
 </html>
