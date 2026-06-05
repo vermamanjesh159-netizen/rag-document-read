@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliSearch</title>
+    <title>IntelliSearch — Workspace</title>
     <link rel="icon" type="image/png" href="/favicon.ico">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #0a0b10;
-            --bg-secondary: #11131e;
-            --bg-tertiary: #191c2d;
+            --bg-primary: #07080d;
+            --bg-secondary: #0d0f1a;
+            --bg-tertiary: #141727;
             --accent-purple: #8b5cf6;
-            --accent-purple-glow: rgba(139, 92, 246, 0.4);
+            --accent-purple-glow: rgba(139, 92, 246, 0.3);
             --accent-blue: #3b82f6;
-            --accent-blue-glow: rgba(59, 130, 246, 0.4);
+            --accent-blue-glow: rgba(59, 130, 246, 0.3);
             --accent-emerald: #10b981;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --text-muted: #6b7280;
-            --border-color: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(255, 255, 255, 0.15);
-            --radius-lg: 16px;
-            --radius-md: 10px;
-            --radius-sm: 6px;
-            --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.15);
+            --border-color: rgba(255, 255, 255, 0.05);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 4px;
+            --shadow-glow: 0 0 24px rgba(139, 92, 246, 0.15);
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -1450,10 +1452,11 @@
         <aside class="sidebar">
             <div class="logo-section">
                 <div class="logo-icon">
-                    <img src="/favicon.ico" alt="Logo" style="width: 24px; height: 24px; object-fit: contain;">
+                    <i class="fas fa-brain"></i>
                 </div>
                 <div class="logo-text">
                     <h1>IntelliSearch</h1>
+                    <span style="font-size: 0.65rem; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; display: block; margin-top: -2px;">Workspace</span>
                 </div>
             </div>
 
@@ -1463,9 +1466,11 @@
                     <span class="section-title" style="margin-bottom: 0;">Conversations</span>
                     <div style="display: flex; gap: 4px;">
                         <button id="btnToggleArchivedView" title="Toggle Active / Archived" style="background: none; border: 1px solid var(--border-color); color: var(--text-muted); cursor: pointer; font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; transition: all 0.2s;">
-                            📁 Active
+                            <i class="fas fa-folder-open" style="margin-right: 3px;"></i> Active
                         </button>
-                        <button class="btn-new-session" id="btnNewSession" title="New Chat" style="font-size: 0.72rem; padding: 2px 6px;">➕ New</button>
+                        <button class="btn-new-session" id="btnNewSession" title="New Chat" style="font-size: 0.72rem; padding: 2px 6px; border: 1px solid var(--accent-purple); border-radius: 4px; background: rgba(139, 92, 246, 0.1); color: #d8b4fe; font-weight: 600;">
+                            <i class="fas fa-plus"></i> New
+                        </button>
                     </div>
                 </div>
                 <div id="sessionsList" style="overflow-y: auto; display: flex; flex-direction: column; gap: 6px; max-height: 160px; background: rgba(0,0,0,0.12); padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
@@ -1478,7 +1483,7 @@
                 <span class="section-title">Ingest Document</span>
                 <div class="upload-card" id="dropzone">
                     <input type="file" id="fileInput" accept=".pdf,.txt">
-                    <div class="upload-icon">📤</div>
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <div class="upload-title">Choose file or drag here</div>
                     <div class="upload-subtitle">PDF or TXT (Max 20MB)</div>
                     <div class="progress-bar-container" id="progressContainer">
@@ -1532,9 +1537,28 @@
                 <div class="pane active" id="chatPane">
                     <div class="chat-history" id="chatHistory">
                         <div class="empty-chat" id="emptyChat">
-                            <div class="empty-chat-icon">💡</div>
-                            <h3>Welcome to IntelliSearch</h3>
-                            <p>Query your document knowledge base in real-time. Upload one or more PDFs or TXTs in the sidebar. IntelliSearch will automatically extract, index, and prepare the content for RAG queries. Your conversations and files are persistent and securely stored.</p>
+                            <div class="empty-chat-icon" style="animation: pulse-glow 2s infinite ease-in-out; margin-bottom: 8px;"><i class="fas fa-brain"></i></div>
+                            <h3>Knowledge Workspace</h3>
+                            <p style="margin-bottom: 24px;">Upload documents in the left panel to build your dynamic session vector space, then query their contents here.</p>
+                            
+                            <div class="prompt-suggestions-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; max-width: 500px; text-align: left;">
+                                <div class="suggestion-card" onclick="useSuggestedPrompt('Summarize key obligations and milestones in this document.')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
+                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-file-contract" style="color: var(--accent-purple); margin-right: 6px;"></i> Contract Summary</strong>
+                                    Summarize key obligations and milestones.
+                                </div>
+                                <div class="suggestion-card" onclick="useSuggestedPrompt('List the main technical requirements mentioned.')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
+                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-cogs" style="color: var(--accent-blue); margin-right: 6px;"></i> Tech Spec Lookup</strong>
+                                    List the main technical requirements mentioned.
+                                </div>
+                                <div class="suggestion-card" onclick="useSuggestedPrompt('Are there any confidentiality or liability caps?')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
+                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-shield-alt" style="color: var(--accent-emerald); margin-right: 6px;"></i> Compliance Audit</strong>
+                                    Are there any confidentiality or liability caps?
+                                </div>
+                                <div class="suggestion-card" onclick="useSuggestedPrompt('Compare specifications between the uploaded documents.')" style="background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); font-size: 0.82rem; color: var(--text-secondary);">
+                                    <strong style="color: white; display: block; margin-bottom: 4px;"><i class="fas fa-exchange-alt" style="color: #f59e0b; margin-right: 6px;"></i> Multi-Doc Compare</strong>
+                                    Compare specifications between the documents.
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1721,6 +1745,16 @@
         let documents = [];
         let pollingInterval = null;
         let showArchivedChats = false;
+
+        // Suggested prompt action handler
+        function useSuggestedPrompt(text) {
+            if (chatInput.disabled) {
+                showToast("Please upload a document first to start chatting.", "warning");
+                return;
+            }
+            chatInput.value = text;
+            chatInput.focus();
+        }
 
         // Tab Switching
         const tabs = document.querySelectorAll('.tab');
